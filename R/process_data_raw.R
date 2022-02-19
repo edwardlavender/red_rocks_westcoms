@@ -81,6 +81,7 @@ mesh_around_elements <- build_mesh(nodexy = nodexy,
                                    trinodes = trinodes,
                                    mesh_type = "node")
 
+
 #### Crop meshes within the MPA
 ## Mesh around nodes
 mesh_around_nodes_in_mpa <- raster::crop(mesh_around_nodes, mpa)
@@ -107,6 +108,20 @@ if(save){
   saveRDS(mesh_around_elements_in_mpa, 
           "./data/spatial/mesh/mesh_around_elements_in_mpa.rds")
 }
+
+#### Checks
+# Check that mesh cells in the MPA have been identified correctly, e.g., for elements:
+mesh_around_elements <- 
+  readRDS("./data/spatial/mesh/mesh_around_elements.rds")
+mesh_around_elements_in_mpa <- 
+  readRDS("./data/spatial/mesh/mesh_around_elements_in_mpa.rds")
+mesh_around_elements$col <- "black"
+mesh_around_elements$col[
+  mesh_around_elements$ID %in% unique(mesh_around_elements_in_mpa$ID)] <- 
+  "red"
+raster::plot(mesh_around_elements, col = mesh_around_elements$col, 
+             xlim = raster::extent(mesh_around_elements_in_mpa)[1:2], 
+             ylim = raster::extent(mesh_around_elements_in_mpa)[3:4])
 
 
 #### End of code. 
