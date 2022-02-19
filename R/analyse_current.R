@@ -28,17 +28,20 @@ mesh  <- readRDS("./data/spatial/mesh/mesh_around_elements_in_mpa.rds")
 #### Derive current speed estimates 
 
 #### Show that current speeds have been correctly estimated 
+# Load files 
 uv <- R.matlab::readMat(paste0(wc_root, "uvelocity/160301.mat"))$data
 vv <- R.matlab::readMat(paste0(wc_root, "vvelocity/160301.mat"))$data
 cs <- readRDS(paste0(wc_root, "current_speed/160301.rds"))
-sqrt(uv[1, 1, 1]^2 + vv[1, 1, 1]^2)
-cs[1, 1, 1]
+# Define random index of bottom velocities to check 
+ind <- cbind(1:20, 10, 1:100)
+identical(sqrt(uv[ind]^2 + vv[ind]^2), cs[ind]) # TRUE
 
 #### Define data for extraction 
 dates       <- seq(as.Date("2016-03-01"), as.Date("2017-02-28"), 1)
 date_names  <- date_name(dates)
 hours       <- 0:23
-layers      <- 10
+# Define layers (1 for surface or 10 for near seabed)
+layers      <- 10 # 1
 mesh_IDs    <- as.integer(as.character(mesh$ID))
 wc <- 
   expand.grid(date_name = date_names, 
@@ -61,15 +64,23 @@ if(run){
   )
   t2 <- Sys.time()
   difftime(t2, t1)
-  saveRDS(wc, "./data/wc/current/wc.rds")
+  if(layers == 10){
+    saveRDS(wc, "./data/wc/current/wc_bot.rds")
+  } else if(layers == 1){
+    saveRDS(wc, "./data/wc/current/wc_sur.rds")
+  }
 } else {
-  wc <- readRDS("./data/wc/current/wc.rds")
+  wc_bot <- readRDS("./data/wc/current/wc_bot.rds")
+  wc_sur <- readRDS("./data/wc/current/wc_sur.rds")
 }
 
 #### Estimate maximum current speeds 
-hist(wc$wc)
-max(wc$wc)
+hist(wc_bot$wc)
+max(wc_bot$wc)
 # 0.1974771
+hist(wc_sur$wc)
+max(wc_sur$wc)
+# 0.7945567
 
 
 #### End of code. 
