@@ -21,6 +21,7 @@ source("./R/define_global_param.R")
 
 #### Load data 
 mesh  <- readRDS("./data/spatial/mesh/mesh_around_elements_in_mpa.rds")
+raster::plot(mesh)
 
 
 ################################
