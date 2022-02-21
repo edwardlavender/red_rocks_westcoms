@@ -83,6 +83,9 @@ hist(wc_sur$wc)
 max(wc_sur$wc)
 # 0.7945567
 
+#### Examine ranges
+utils.add::basic_stats(wc_sur$wc)
+utils.add::basic_stats(wc_bot$wc)
 
 #### End of code. 
 ################################
