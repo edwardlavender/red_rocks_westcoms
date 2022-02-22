@@ -98,7 +98,13 @@ wc$depth <- nodexy$z[match(wc$mesh_ID, nodexy$node_id)]
 #### Summary statistics 
 
 #### Annual average
+## Bottom temps
 utils.add::basic_stats(wc$wc)
+# min mean median   max  sd IQR  MAD
+# 1 8.69 10.5  10.61 12.43 1.1 2.2 1.54
+## Comparable surface temps
+# min  mean median   max   sd  IQR MAD
+# 1 8.46 10.69  10.86 13.07 1.13 2.22 1.5
 
 #### Monthly averages
 wc_by_month <- 
