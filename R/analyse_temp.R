@@ -118,6 +118,20 @@ wc_by_month <-
   dplyr::arrange(wc_mean)
 wc_by_month
 
+#### Monthly averages by depth bin
+wc_by_month_by_bin <- 
+  wc %>% 
+  dplyr::mutate(bin = cut(depth, 10)) %>%
+  dplyr::group_by(bin, month) %>%
+  dplyr::summarise(depth   = depth[1], 
+                   wc_mean = mean(wc), 
+                   # wc_q1   = quantile(wc, 0.25), 
+                   # wc_q3   = quantile(wc, 0.75), 
+                   wc_iqr  = IQR(wc)) %>%
+  dplyr::arrange(month, wc_mean)
+wc_by_month_by_bin
+# View(wc_by_month_by_bin)
+
 
 ################################
 #### Monthly maps
