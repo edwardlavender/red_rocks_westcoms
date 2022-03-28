@@ -24,7 +24,7 @@ library(fvcom.tbx)
 
 #### Load data
 ## MPA boundaries
-mpa <- rgdal::readOGR("./data-raw/spatial/mpa/NC_MPA.shp")
+mpa <- rgdal::readOGR("./data-raw/spatial/mpa/2022/original_MPA_boundary.shp")
 ## WeStCOMS mesh
 # mesh coordinates (nodes)
 nodexy <- read.csv("./data-raw/spatial/mesh/mesh_x.csv")
@@ -33,12 +33,16 @@ str(nodexy)
 trinodes <- read.csv("./data-raw/spatial/mesh/mesh_trinodes.csv")
 str(trinodes)
 
+#### Define global parameters
+wgs84 <- sp::CRS(as.character("+init=epsg:4326"))
+
 
 ################################
 ################################
 #### Coastline and MPA boundaries
 
 #### Define MPA boundaries
+mpa <- sp::spTransform(mpa, wgs84)
 raster::crs(mpa)
 raster::plot(mpa)
 saveRDS(mpa, "./data/spatial/mpa/mpa.rds")
@@ -51,9 +55,10 @@ if(download){
                 destfile = "./data-raw/spatial/coast/GBR_adm0.rds")
 }
 coast <- readRDS("./data-raw/spatial/coast/GBR_adm0.rds")
+coast <- sp::spTransform(coast, wgs84)
 coast <- raster::crop(coast, flapper::update_extent(raster::extent(mpa), 0.5))
 raster::plot(coast)
-raster::crs(coast)
+raster::lines(mpa, col = "blue")
 saveRDS(coast, "./data/spatial/coast/coast.rds")
 
 
@@ -70,51 +75,64 @@ nodexy           <- dplyr::select(nodexy, node_id, x, y, z)
 colnames(trinodes)  <- c("node1", "node2", "node3")
 trinodes$element_id <- 1:nrow(trinodes)
 trinodes            <- dplyr::select(trinodes, element_id, node1, node2, node3)
+## Save dataframes
+saveRDS(nodexy, 
+        "./data/spatial/mesh/mesh_nodexy.rds")
+saveRDS(trinodes, 
+        "./data/spatial/mesh/mesh_trinodes.rds")
 
 #### Build meshs 
-## Mesh around nodes
-mesh_around_nodes <- build_mesh(nodexy = nodexy,
-                                trinodes = trinodes,
-                                mesh_type = "element")
-## Mesh around elements 
-mesh_around_elements <- build_mesh(nodexy = nodexy,
-                                   trinodes = trinodes,
-                                   mesh_type = "node")
-
-
-#### Crop meshes within the MPA
-## Mesh around nodes
-mesh_around_nodes_in_mpa <- raster::crop(mesh_around_nodes, mpa)
-mesh_around_nodes_in_mpa$ID
-raster::plot(mesh_around_nodes_in_mpa, col = "royalblue")
-## Mesh around elements
-mesh_around_elements_in_mpa <- raster::crop(mesh_around_elements, mpa)
-mesh_around_elements_in_mpa$ID
-raster::plot(mesh_around_elements_in_mpa, col = "royalblue")
-
-#### Save meshes
-save <- FALSE
-if(save){
-  saveRDS(nodexy, 
-          "./data/spatial/mesh/mesh_nodexy.rds")
-  saveRDS(trinodes, 
-          "./data/spatial/mesh/mesh_trinodes.rds")
+run <- FALSE
+if(run){
+  ## Mesh around nodes
+  mesh_around_nodes <- build_mesh(nodexy = nodexy,
+                                  trinodes = trinodes,
+                                  mesh_type = "element")
+  ## Mesh around elements 
+  mesh_around_elements <- build_mesh(nodexy = nodexy,
+                                     trinodes = trinodes,
+                                     mesh_type = "node")
+  
+  ## Save meshes
   saveRDS(mesh_around_nodes, 
           "./data/spatial/mesh/mesh_around_nodes.rds")
   saveRDS(mesh_around_elements, 
           "./data/spatial/mesh/mesh_around_elements.rds")
+} else {
+  mesh_around_nodes <- 
+    readRDS("./data/spatial/mesh/mesh_around_nodes.rds")
+  mesh_around_elements <- 
+    readRDS("./data/spatial/mesh/mesh_around_elements.rds")
+}
+
+#### Crop meshes within the MPA
+run <- TRUE
+if(run){
+  ## Mesh around nodes
+  mesh_around_nodes_in_mpa <- raster::crop(mesh_around_nodes, mpa)
+  mesh_around_nodes_in_mpa$ID
+  raster::plot(mesh_around_nodes_in_mpa, col = "royalblue")
+  
+  ## Mesh around elements
+  mesh_around_elements_in_mpa <- raster::crop(mesh_around_elements, mpa)
+  mesh_around_elements_in_mpa$ID
+  raster::plot(mesh_around_elements_in_mpa, col = "royalblue")
+  
+  ## Save meshes
   saveRDS(mesh_around_nodes_in_mpa, 
           "./data/spatial/mesh/mesh_around_nodes_in_mpa.rds")
   saveRDS(mesh_around_elements_in_mpa, 
           "./data/spatial/mesh/mesh_around_elements_in_mpa.rds")
+} else {
+  mesh_around_nodes_in_mpa <- 
+    readRDS("./data/spatial/mesh/mesh_around_nodes_in_mpa.rds")
+  mesh_around_elements_in_mpa <- 
+    readRDS("./data/spatial/mesh/mesh_around_elements_in_mpa.rds")
 }
+
 
 #### Checks
 # Check that mesh cells in the MPA have been identified correctly, e.g., for elements:
-mesh_around_elements <- 
-  readRDS("./data/spatial/mesh/mesh_around_elements.rds")
-mesh_around_elements_in_mpa <- 
-  readRDS("./data/spatial/mesh/mesh_around_elements_in_mpa.rds")
 mesh_around_elements$col <- "black"
 mesh_around_elements$col[
   mesh_around_elements$ID %in% unique(mesh_around_elements_in_mpa$ID)] <- 
