@@ -20,6 +20,7 @@
 rm(list = ls())
 
 #### Essential packages
+library(magrittr)
 library(fvcom.tbx)
 
 #### Load data
@@ -106,7 +107,7 @@ if(run){
 }
 
 #### Crop meshes within the MPA
-run <- TRUE
+run <- FALSE
 if(run){
   ## Mesh around nodes
   mesh_around_nodes_in_mpa <- raster::crop(mesh_around_nodes, mpa)
@@ -130,16 +131,104 @@ if(run){
     readRDS("./data/spatial/mesh/mesh_around_elements_in_mpa.rds")
 }
 
+#### Crop meshes within region 
+run <- FALSE
+if(run){
+  
+  ## Define sensible region boundaries 
+  ext <- raster::extent(c(-6.0352, -5.8239, 57.25837, 57.40612))
+  
+  ## Mesh around nodes
+  mesh_around_nodes_in_region <- raster::crop(mesh_around_nodes, ext)
+  mesh_around_nodes_in_region$ID
+  raster::plot(mesh_around_nodes_in_region, col = "royalblue")
+  
+  ## Mesh around elements
+  mesh_around_elements_in_region <- raster::crop(mesh_around_elements, ext)
+  mesh_around_elements_in_region$ID
+  raster::plot(mesh_around_elements_in_region, col = "royalblue")
+  
+  ## Save meshes
+  saveRDS(mesh_around_nodes_in_region, 
+          "./data/spatial/mesh/mesh_around_nodes_in_region.rds")
+  saveRDS(mesh_around_elements_in_region, 
+          "./data/spatial/mesh/mesh_around_elements_in_region.rds")
+  
+} else {
+  mesh_around_nodes_in_region <- 
+    readRDS("./data/spatial/mesh/mesh_around_nodes_in_region.rds")
+  mesh_around_elements_in_region <- 
+    readRDS("./data/spatial/mesh/mesh_around_elements_in_region.rds")
+}
 
 #### Checks
-# Check that mesh cells in the MPA have been identified correctly, e.g., for elements:
-mesh_around_elements$col <- "black"
-mesh_around_elements$col[
-  mesh_around_elements$ID %in% unique(mesh_around_elements_in_mpa$ID)] <- 
-  "red"
-raster::plot(mesh_around_elements, col = mesh_around_elements$col, 
-             xlim = raster::extent(mesh_around_elements_in_mpa)[1:2], 
-             ylim = raster::extent(mesh_around_elements_in_mpa)[3:4])
+check <- FALSE
+if(check){
+  # Check that mesh cells in the MPA have been identified correctly, e.g., for elements:
+  mesh_around_elements$col <- "black"
+  mesh_around_elements$col[
+    mesh_around_elements$ID %in% unique(mesh_around_elements_in_mpa$ID)] <- 
+    "red"
+  raster::plot(mesh_around_elements, col = mesh_around_elements$col, 
+               xlim = raster::extent(mesh_around_elements_in_mpa)[1:2], 
+               ylim = raster::extent(mesh_around_elements_in_mpa)[3:4])
+}
+
+
+################################
+################################
+#### Egg locations
+
+#### Read data
+eggs <- 
+  readxl::read_excel("./data-raw/eggs/RR&L - locations where eggs were found and depth.xlsx") %>%
+  data.frame()
+head(eggs)
+
+#### Define clean dataframe of egg locations 
+eggs <- data.frame(station = eggs$Stn, 
+                   date    = eggs$Date, 
+                   time_1  = eggs$Time_Start, 
+                   time_2  = eggs$Time_End_U, 
+                   lat_1   = eggs$Lat_start_,
+                   long_1  = eggs$Long_start,
+                   lat_2   = eggs$Lat_end_DD,
+                   long_2  = eggs$Long_end_D,
+                   depth_1 = eggs$Depth_Star, 
+                   depth_2 = eggs$Depth_St_1, 
+                   eggs    = eggs$Skate_egg
+                   )
+eggs$eggs[which(is.na(eggs$eggs))]   <- 0
+eggs$eggs[which(eggs$eggs == "YES")] <- 1
+unique(eggs$eggs)
+eggs$eggs <- factor(eggs$eggs)
+
+#### Check the locations of eggs on the mesh
+# Locations in and around the MPA were surveyed
+# Eggs were almost exclusively found in the (updated) MPA's boundaries
+# One site beyond the MPA was identified with eggs 
+png("./fig/map_mesh.png", 
+    height = 10, width = 10, units = "in", res = 600)
+ext <- raster::extent(mesh_around_nodes_in_mpa)
+ext <- flapper::update_extent(ext, 0.05)
+xlim <- ext[1:2]
+ylim <- ext[3:4]
+raster::plot(coast, 
+             col = "dimgrey",
+             xlim = xlim, ylim = ylim)
+raster::lines(mesh_around_nodes_in_mpa, col = "royalblue")
+raster::lines(mpa, col = "royalblue")
+box()
+arrows(x0 = eggs$long_1, 
+       y0 = eggs$lat_1, 
+       x1 = eggs$long_2, 
+       x2 = eggs$lat_2, 
+       col = c("red", "darkgreen")[eggs$eggs],
+       length = 0.01)
+dev.off()
+
+#### Save dataframe
+saveRDS(eggs, "./data/eggs/eggs.rds")
 
 
 #### End of code. 
