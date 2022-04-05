@@ -194,9 +194,9 @@ eggs <- data.frame(station = eggs$Stn,
                    long_1  = eggs$Long_start,
                    lat_2   = eggs$Lat_end_DD,
                    long_2  = eggs$Long_end_D,
-                   depth_1 = as.numeric(eggs$Depth_Star), 
+                   depth_1 = as.numeric(eggs$Depth_Star), # coerce n/a to NA
                    depth_2 = as.numeric(eggs$Depth_St_1), 
-                   eggs    = eggs$Skate_egg
+                   present = eggs$Skate_egg
                    )
 eggs$present[which(is.na(eggs$present))]   <- 0
 eggs$present[which(eggs$present == "YES")] <- 1
@@ -227,7 +227,7 @@ box()
 arrows(x0 = eggs$long_1, 
        y0 = eggs$lat_1, 
        x1 = eggs$long_2, 
-       x2 = eggs$lat_2, 
+       y1 = eggs$lat_2, 
        col = c("red", "darkgreen")[eggs$present],
        length = 0.01)
 dev.off()
