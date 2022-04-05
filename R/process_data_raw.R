@@ -194,14 +194,19 @@ eggs <- data.frame(station = eggs$Stn,
                    long_1  = eggs$Long_start,
                    lat_2   = eggs$Lat_end_DD,
                    long_2  = eggs$Long_end_D,
-                   depth_1 = eggs$Depth_Star, 
-                   depth_2 = eggs$Depth_St_1, 
+                   depth_1 = as.numeric(eggs$Depth_Star), 
+                   depth_2 = as.numeric(eggs$Depth_St_1), 
                    eggs    = eggs$Skate_egg
                    )
-eggs$eggs[which(is.na(eggs$eggs))]   <- 0
-eggs$eggs[which(eggs$eggs == "YES")] <- 1
-unique(eggs$eggs)
-eggs$eggs <- factor(eggs$eggs)
+eggs$present[which(is.na(eggs$present))]   <- 0
+eggs$present[which(eggs$present == "YES")] <- 1
+unique(eggs$present)
+eggs$present <- factor(eggs$present)
+
+#### Define average locations
+eggs$lat   <- apply(eggs[, c("lat_1", "lat_2")], 1, mean)
+eggs$long  <- apply(eggs[, c("long_1", "long_2")], 1, mean)
+eggs$depth <- apply(eggs[, c("depth_1", "depth_2")], 1, mean)
 
 #### Check the locations of eggs on the mesh
 # Locations in and around the MPA were surveyed
@@ -223,7 +228,7 @@ arrows(x0 = eggs$long_1,
        y0 = eggs$lat_1, 
        x1 = eggs$long_2, 
        x2 = eggs$lat_2, 
-       col = c("red", "darkgreen")[eggs$eggs],
+       col = c("red", "darkgreen")[eggs$present],
        length = 0.01)
 dev.off()
 
