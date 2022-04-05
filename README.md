@@ -22,37 +22,48 @@ Scotland
 
 This repository contains methods, written in `R` and organised as an `R
 Project`, for the exploration of hydrodynamic conditions in the Red
-Rocks and Longay Marine Protected Area (MPA). These methods support Dodd
-et al. (in press).
+Rocks and Longay Marine Protected Area (MPA) and around survey stations
+where flapper skate (*Dipturus intermedius*) have been documented. These
+methods support Dodd et al. (in press). First report of an egg nursery
+for the Critically Endangered flapper skate *Dipturus intermedius*
+(Rajiformes: Rajidae). Aquat. Conserv.
 
-Hydrodynamic conditions within the MPA were explored using the West
-Scotland Coastal Ocean Modelling System (WeStCOMS) (Aleynik et al.,
-2016). This modelling system resolves hourly hydrodynamic conditions
-across an unstructured, triangular mesh that is organised into 11
-vertically spaced, terrain-following Sigma layers (the 1st layer lies at
-the surface, the 10th layer lies at the seabed and 11th layer lies below
-the seabed). Scalar variables, such as temperature, are resolved at mesh
+Hydrodynamic conditions across the MPA at large and in locations where
+eggs were found specifically were explored using the West Scotland
+Coastal Ocean Modelling System (WeStCOMS) (Aleynik et al., 2016). This
+modelling system resolves hourly hydrodynamic conditions across an
+unstructured, triangular mesh that is organised into 11 vertically
+spaced, terrain-following Sigma layers (the 1st layer lies at the
+surface, the 10th layer lies at the seabed and 11th layer lies below the
+seabed). Scalar variables, such as temperature, are resolved at mesh
 nodes, while vector variables, including current velocity vectors, are
 resolved at mesh centroids (elements). In this study, model predictions
-from a one-year period from 1st March 2016–28th February 2017 inclusive
-were used to analyse hydrodynamic conditions via the fvcom.tbx R package
-(Lavender, 2020). Two analyses were implemented:
+from a one-year period were used to analyse hydrodynamic conditions via
+the fvcom.tbx R package (Lavender, 2020).
 
-1)  **Current speed.** The maximum current speed predicted for the area
-    was calculated from hourly current velocity vector predictions for
-    the deepest elements (approximately 5–20 m above the seabed,
-    depending on location) over the analysed period.
+For the MPA at large, two analyses were implemented:
+
+1)  **Current speed.** The mean current speed and the range predicted
+    for the area were calculated from hourly current velocity vector
+    predictions for the deepest elements (approximately 5–20 m above the
+    seabed, depending on location) over the analysed period.
 2)  **Temperatures.** Spatiotemporal variation in bottom temperatures
     was explored using hourly temperature predictions for the 10th Sigma
-    layer over the analysed period. The annual average bottom
-    temperature and the interquartile range/standard deviation across
-    the area were calculated from these predictions, alongside monthly
-    averages and interquartile ranges/standard deviations. Time series
-    plots and mapping were used to visualise spatiotemporal variation.
+    layer over the analysed period. Time series plot were used to
+    visualise annual temperature trends and their relationship with
+    depth.
+
+For the WeStCOMS elements/nodes nearest to the stations in which eggs
+were located, near-bottom current speeds and temperature trends were
+examined in the same way in relation to conditions across the MPA at
+large.
 
 ## Structure
 
 1.  **`data-raw/`** contains ‘raw’ data for the project:
+      - `eggs/` contains egg survey data; namely:
+          - `RR&L - locations where eggs were found and depth.xlsx`,
+            sourced from Jane Dodd;
       - `spatial/` contains spatial data; namely:
           - `coast/` contains coastline data for the region, sourced
             from the [Database of Global Administrative
@@ -74,9 +85,8 @@ were used to analyse hydrodynamic conditions via the fvcom.tbx R package
 3.  **`R/`** contains scripts for data processing and analysis:
       - `define_global_param.R` defines global parameters;
       - `process_data_raw.R` processes raw data;
-      - `analyse_current.R` analyses current velocities in the MPA;
-      - `analyse_temp.R` analyses bottom temperatures in the MPA;
-        <br/><br/>
+      - `analyse_current.R` analyses current velocities;
+      - `analyse_temp.R` analyses bottom temperatures; <br/><br/>
 4.  **`fig/`** contains figures.
 
 Note that the `data-raw`, `data` and `fig` directories are not provided
@@ -98,8 +108,8 @@ in the minimum and maximum predicted hourly bottom temperature though
 time and with depth across the WeStCOMS mesh in the Red Rocks and Longay
 Marine Protected Area. The red line shows the maximum temperature and
 the blue line shows the minimum temperature. Line thickness is
-proportional to the depth of the seabed in the WeStCOMS mesh cell in
-which the minimum/maximum temperature was predicted.*
+proportional to the depth of the seabed at the WeStCOMS node in which
+the minimum/maximum temperature was predicted.*
 
 # GitHub packages
 
@@ -124,7 +134,9 @@ suitable for novel harmful algal bloom modelling in areas of complex
 coastline and topography. Harmful Algae 53, 102–117.
 <doi:10.1016/j.hal.2015.11.012>.
 
-Dodd, et al. (in press).
+Dodd, et al. (in press). First report of an egg nursery for the
+Critically Endangered flapper skate *Dipturus intermedius* (Rajiformes:
+Rajidae). Aquat. Conserv.
 
 Lavender, E. (2020). fvcom.tbx: An R toolbox for the unstructured grid
 Finite Volume Community Ocean Model (FVCOM). R package version 0.1.0.
