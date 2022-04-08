@@ -164,7 +164,15 @@ if(run){
 #### Checks
 check <- FALSE
 if(check){
-  # Check that mesh cells in the MPA have been identified correctly, e.g., for elements:
+  ## Check grid resolution in MPA (overestimate because some cells are 'cut' by MPA boundary)
+  # Nodes
+  length(unique(mesh_around_nodes_in_mpa$ID))
+  utils.add::basic_stats(raster::area(mesh_around_nodes_in_mpa, byid = TRUE)/1e6)
+  # Elements
+  length(unique(mesh_around_elements_in_mpa$ID))
+  utils.add::basic_stats(raster::area(mesh_around_elements_in_mpa, byid = TRUE)/1e6)
+  
+  ## Check that mesh cells in the MPA have been identified correctly, e.g., for elements:
   mesh_around_elements$col <- "black"
   mesh_around_elements$col[
     mesh_around_elements$ID %in% unique(mesh_around_elements_in_mpa$ID)] <- 
@@ -179,14 +187,15 @@ if(check){
 ################################
 #### Egg locations
 
-#### Read data
+#### Read data on egg locations (collected from recent DDV and ROV surveys)
 eggs <- 
   readxl::read_excel("./data-raw/eggs/RR&L - locations where eggs were found and depth.xlsx") %>%
   data.frame()
 head(eggs)
 
 #### Define clean dataframe of egg locations 
-eggs <- data.frame(station = eggs$Stn, 
+eggs <- data.frame(survey  = "DDV/ROV",
+                   station = eggs$Stn, 
                    date    = eggs$Date, 
                    time_1  = eggs$Time_Start, 
                    time_2  = eggs$Time_End_U, 
@@ -207,6 +216,18 @@ eggs$present <- factor(eggs$present)
 eggs$lat   <- apply(eggs[, c("lat_1", "lat_2")], 1, mean)
 eggs$long  <- apply(eggs[, c("long_1", "long_2")], 1, mean)
 eggs$depth <- apply(eggs[, c("depth_1", "depth_2")], 1, mean)
+
+#### Get mesh cells
+eggs$nodes    <- find_cells(lat = eggs$lat, long = eggs$long, 
+                            mesh = mesh_around_nodes_in_region,  
+                            proj = raster::crs(mesh_around_nodes_in_region), 
+                            f = function(x) as.integer(as.character(x)), 
+                            return = 4)
+eggs$elements <- find_cells(lat = eggs$lat, long = eggs$long, 
+                            mesh = mesh_around_elements_in_region,  
+                            proj = raster::crs(mesh_around_elements_in_region), 
+                            f = function(x) as.integer(as.character(x)), 
+                            return = 4)
 
 #### Check the locations of eggs on the mesh
 # Locations in and around the MPA were surveyed
@@ -232,8 +253,40 @@ arrows(x0 = eggs$long_1,
        length = 0.01)
 dev.off()
 
+#### Check the locations of previous DDV and diver surveys (using data from JD)
+## -> All of these locations within nodes represented above. 
+# Define additional survey locations 
+extras <- data.frame(survey = c("DDV", "DDV", "Diver"),
+                     date = as.Date(c("2019-03-02", "2018-07-19", "2020-03-03")),
+                     lat = c(57.31282, 57.32254, 57.33325), 
+                     long = c(-5.87816, -5.89849, -5.92718))
+extras$nodes    <- find_cells(lat = extras$lat, long = extras$long, 
+                              mesh = mesh_around_nodes_in_region,  
+                              proj = raster::crs(mesh_around_nodes_in_region), 
+                              f = function(x) as.integer(as.character(x)), 
+                              return = 4)
+extras$elements <- find_cells(lat = extras$lat, long = extras$long, 
+                              mesh = mesh_around_elements_in_region,  
+                              proj = raster::crs(mesh_around_elements_in_region), 
+                              f = function(x) as.integer(as.character(x)), 
+                              return = 4)
+# Check whether these occurred in the same WeStCOMS nodes/elements as above
+extras$nodes %in% eggs$nodes
+extras$elements %in% eggs$elements
+# Examine visual check
+raster::plot(mesh_around_nodes_in_mpa)
+arrows(x0 = eggs$long_1, 
+       y0 = eggs$lat_1, 
+       x1 = eggs$long_2, 
+       y1 = eggs$lat_2, 
+       col = c("red", "darkgreen")[eggs$present],
+       length = 0.01)
+points(extras$long,extras$lat, cex = 2, pch = 4, lwd = 3, col = "orange")
+
 #### Save dataframe
 saveRDS(eggs, "./data/eggs/eggs.rds")
+
+
 
 
 #### End of code. 
