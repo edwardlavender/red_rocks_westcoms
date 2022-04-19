@@ -120,8 +120,8 @@ available on [GitHub](https://github.com/) are also used:
 
   - [`fvcom.tbx`](https://github.com/edwardlavender/fvcom.tbx). This
     package is used for WeStCOMS analyses.
-  - [`flapper`](https://github.com/edwardlavender/fvcom.tbx). This
-    package is used for parallelisation routines.
+  - [`flapper`](https://github.com/edwardlavender/flapper). This package
+    is used for parallelisation routines.
   - [`prettyGraphics`](https://github.com/edwardlavender/prettyGraphics).
     This package is used for plotting.
   - [`utils.add`](https://github.com/edwardlavender/utils.add). This

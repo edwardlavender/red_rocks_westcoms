@@ -68,7 +68,7 @@ _Figure 1. Example outputs from the `red_rocks_westcoms` project: trends in the 
 This repository uses a number of non-default packages, available from [The Comprehensive R Archive Network](https://cran.r-project.org). These can be installed with `install.packages()`. Four packages that are only available on [GitHub](https://github.com/) are also used:
 
    - [`fvcom.tbx`](https://github.com/edwardlavender/fvcom.tbx). This package is used for WeStCOMS analyses. 
-   - [`flapper`](https://github.com/edwardlavender/fvcom.tbx). This package is used for parallelisation routines.
+   - [`flapper`](https://github.com/edwardlavender/flapper). This package is used for parallelisation routines.
    - [`prettyGraphics`](https://github.com/edwardlavender/prettyGraphics). This package is used for plotting. 
    - [`utils.add`](https://github.com/edwardlavender/utils.add). This package is used for summarising data. 
 
