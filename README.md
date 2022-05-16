@@ -1,5 +1,5 @@
-Hydrodynamic conditions in the Red Rocks and Longay Marine Protected
-Area
+Flapper skate (*Dipturus intermedius*) and the Red Rocks and Longay
+Marine Protected Area
 ================
 Edward Lavender<sup>1,2\*</sup>
 
@@ -21,12 +21,12 @@ Scotland
 ## Introduction
 
 This repository contains methods, written in `R` and organised as an `R
-Project`, for the exploration of hydrodynamic conditions in the Red
-Rocks and Longay Marine Protected Area (MPA) and around survey stations
-where flapper skate (*Dipturus intermedius*) have been documented. These
-methods support Dodd et al. (in press). First report of an egg nursery
-for the Critically Endangered flapper skate *Dipturus intermedius*
-(Rajiformes: Rajidae). Aquat. Conserv.
+Project`, for the exploration of flapper skate (*Dipturus intermedius*)
+egg count–area scaling relationships and hydrodynamic conditions in the
+Red Rocks and Longay Marine Protected Area (MPA). These methods support
+Dodd et al. (in press). First report of an egg nursery for the
+Critically Endangered flapper skate *Dipturus intermedius* (Rajiformes:
+Rajidae). Aquat. Conserv.
 
 Hydrodynamic conditions across the MPA at large and in locations where
 eggs were found specifically were explored using the West Scotland
@@ -58,12 +58,19 @@ were located, near-bottom current speeds and temperature trends were
 examined in the same way in relation to conditions across the MPA at
 large.
 
+For the sites with eggs, data on egg counts were also used to examine
+egg count–area scaling relationships and to estimate the area expected
+to contain different numbers of eggs. These analyses will guide the
+identification of further flapper skate egg nurseries in the future.
+
 ## Structure
 
 1.  **`data-raw/`** contains ‘raw’ data for the project:
       - `eggs/` contains egg survey data; namely:
           - `RR&L - locations where eggs were found and depth.xlsx`,
             sourced from Jane Dodd;
+          - `egg_counts.xlsx`, assembled from data sourced from Jane
+            Dodd;
       - `spatial/` contains spatial data; namely:
           - `coast/` contains coastline data for the region, sourced
             from the [Database of Global Administrative
@@ -98,8 +105,10 @@ in the online version of this repository.
 
 2.  **Process raw data** via `process_data_raw.R`.
 
-3.  **Implement data analysis** via `analyse_current.R` and
+3.  **Implement WeStCOMS analysis** via `analyse_current.R` and
     `analyse_temp.R`.
+
+4.  **Implement egg-counts analysis** via `analyse_eggs.R`.
 
 <img src="README_img.png" width = "500"/>
 
