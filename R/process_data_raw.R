@@ -72,10 +72,12 @@ saveRDS(coast, "./data/spatial/coast/coast.rds")
 colnames(nodexy) <- c("x", "y", "z")
 nodexy$node_id   <- 1:nrow(nodexy)
 nodexy           <- dplyr::select(nodexy, node_id, x, y, z)
+nrow(nodexy)
 ## Node connections
 colnames(trinodes)  <- c("node1", "node2", "node3")
 trinodes$element_id <- 1:nrow(trinodes)
 trinodes            <- dplyr::select(trinodes, element_id, node1, node2, node3)
+nrow(trinodes)
 ## Save dataframes
 saveRDS(nodexy, 
         "./data/spatial/mesh/mesh_nodexy.rds")
