@@ -93,7 +93,9 @@ identification of further flapper skate egg nurseries in the future.
       - `define_global_param.R` defines global parameters;
       - `process_data_raw.R` processes raw data;
       - `analyse_current.R` analyses current velocities;
-      - `analyse_temp.R` analyses bottom temperatures; <br/><br/>
+      - `analyse_temp.R` analyses bottom temperatures;
+      - `analyse_eggs.R` analyses egg count–area scaling relationships;
+        <br/><br/>
 4.  **`fig/`** contains figures.
 
 Note that the `data-raw`, `data` and `fig` directories are not provided

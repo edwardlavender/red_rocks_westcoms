@@ -48,7 +48,8 @@ For the sites with eggs, data on egg counts were also used to examine egg count-
       - `define_global_param.R` defines global parameters;
       - `process_data_raw.R` processes raw data;
       - `analyse_current.R` analyses current velocities;
-      - `analyse_temp.R` analyses bottom temperatures; <br/><br/>
+      - `analyse_temp.R` analyses bottom temperatures; 
+      - `analyse_eggs.R` analyses egg count--area scaling relationships; <br/><br/>
       
 4.  **`fig/`** contains figures.
 
