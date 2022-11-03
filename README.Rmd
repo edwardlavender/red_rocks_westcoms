@@ -15,7 +15,7 @@ output: github_document
 
 ## Introduction
 
-This repository contains methods, written in `R` and organised as an `R Project`, for the exploration of flapper skate (_Dipturus intermedius_) egg count--area scaling relationships and hydrodynamic conditions in the Red Rocks and Longay Marine Protected Area (MPA). These methods support Dodd et al. (in press). First report of an egg nursery for the Critically Endangered flapper skate _Dipturus intermedius_ (Rajiformes: Rajidae). Aquat. Conserv. 
+This repository contains methods, written in `R` and organised as an `R Project`, for the exploration of flapper skate (_Dipturus intermedius_) egg count--area scaling relationships and hydrodynamic conditions in the Red Rocks and Longay Marine Protected Area (MPA). These methods support Dodd et al. (2022). First report of an egg nursery for the Critically Endangered flapper skate _Dipturus intermedius_ (Rajiformes: Rajidae). _Aquatic Conservation: Marine and Freshwater Ecosystems_, 32(10), 1647--1659. https://doi.org/10.1002/aqc.3857. 
 
 Hydrodynamic conditions across the MPA at large and in locations where eggs were found specifically were explored using the West Scotland Coastal Ocean Modelling System (WeStCOMS) (Aleynik et al., 2016). This modelling system resolves hourly hydrodynamic conditions across an unstructured, triangular mesh that is organised into 11 vertically spaced, terrain-following Sigma layers (the 1st layer lies at the surface, the 10th layer lies at the seabed and 11th layer lies below the seabed).  Scalar variables, such as temperature, are resolved at mesh nodes, while vector variables, including current velocity vectors, are resolved at mesh centroids (elements). In this study, model predictions from a one-year period were used to analyse hydrodynamic conditions via the fvcom.tbx R package (Lavender, 2020).
 
@@ -80,8 +80,8 @@ This repository uses a number of non-default packages, available from [The Compr
 
 ## References
 
-Aleynik, D. et al. (2016). A high resolution hydrodynamic model system suitable for novel harmful algal bloom modelling in areas of complex coastline and topography. Harmful Algae 53, 102–117. doi:10.1016/j.hal.2015.11.012.
+Aleynik, D. et al. (2016). A high resolution hydrodynamic model system suitable for novel harmful algal bloom modelling in areas of complex coastline and topography. _Harmful Algae_, 53, 102–117. doi:10.1016/j.hal.2015.11.012.
 
-Dodd, et al. (in press). First report of an egg nursery for the Critically Endangered flapper skate _Dipturus intermedius_ (Rajiformes: Rajidae). Aquat. Conserv. 
+Dodd, et al. (2022). First report of an egg nursery for the Critically Endangered flapper skate _Dipturus intermedius_ (Rajiformes: Rajidae). _Aquatic Conservation: Marine and Freshwater Ecosystems_, 32(10), 1647--1659. https://doi.org/10.1002/aqc.3857. 
 
 Lavender, E. (2020). fvcom.tbx: An R toolbox for the unstructured grid Finite Volume Community Ocean Model (FVCOM). R package version 0.1.0. Available at: https://github.com/edwardlavender/fvcom.tbx.
